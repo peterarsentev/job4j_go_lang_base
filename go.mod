@@ -1,6 +1,6 @@
 module job4j.ru/go-lang-base
 
-go 1.24.2
+go 1.21.12
 
 require github.com/stretchr/testify v1.11.1
 

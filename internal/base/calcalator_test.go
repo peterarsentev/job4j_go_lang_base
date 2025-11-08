@@ -7,10 +7,24 @@ import (
 )
 
 func Test_Add(t *testing.T) {
+	t.Parallel()
 
-	rsl := base.Add(1, 2)
-	expected := 3
+	t.Run("1 + 2 = 3", func(t *testing.T) {
+		t.Parallel()
 
-	assert.Equal(t, rsl, expected)
+		rsl := base.Add(1, 2)
+		expected := 3
+
+		assert.Equal(t, rsl, expected)
+	})
+
+	t.Run("2 + 2 = 3", func(t *testing.T) {
+		t.Parallel()
+
+		rsl := base.Add(2, 2)
+		expected := 3
+
+		assert.Equal(t, rsl, expected)
+	})
 
 }
