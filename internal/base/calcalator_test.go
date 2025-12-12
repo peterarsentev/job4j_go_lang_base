@@ -18,11 +18,11 @@ func Test_Add(t *testing.T) {
 		assert.Equal(t, rsl, expected)
 	})
 
-	t.Run("2 + 2 = 3", func(t *testing.T) {
+	t.Run("2 + 2 = 4", func(t *testing.T) {
 		t.Parallel()
 
 		rsl := base.Add(2, 2)
-		expected := 3
+		expected := 4
 
 		assert.Equal(t, rsl, expected)
 	})
