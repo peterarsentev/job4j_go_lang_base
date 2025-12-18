@@ -2,26 +2,24 @@ package main
 
 import (
 	"context"
+	"github.com/gofiber/fiber/v2"
+	"job4j.ru/go-lang-base/internal/api"
+	"job4j.ru/go-lang-base/internal/config"
 	"job4j.ru/go-lang-base/internal/db"
 	item "job4j.ru/go-lang-base/internal/repository"
-	"job4j.ru/go-lang-base/internal/tracker"
 	"log"
-	"os"
-	"strconv"
-
-	"github.com/google/uuid"
 )
 
 func main() {
 	ctx := context.Background()
 
 	cfg := db.Config{
-		Host:     env("DB_HOST", "localhost"),
-		Port:     envInt("DB_PORT", 5432),
-		User:     env("DB_USER", "postgres"),
-		Password: env("DB_PASSWORD", "password"),
-		DBName:   env("DB_NAME", "tracker"),
-		SSLMode:  env("DB_SSLMODE", "disable"),
+		Host:     config.Env("DB_HOST", "localhost"),
+		Port:     config.EnvInt("DB_PORT", 5432),
+		User:     config.Env("DB_USER", "postgres"),
+		Password: config.Env("DB_PASSWORD", "password"),
+		DBName:   config.Env("DB_NAME", "tracker"),
+		SSLMode:  config.Env("DB_SSLMODE", "disable"),
 	}
 
 	pool, err := db.NewPool(ctx, cfg.DSN())
@@ -31,42 +29,13 @@ func main() {
 	defer pool.Close()
 
 	repo := item.NewRepoPg(pool)
+	server := api.NewServer(repo)
 
-	it := tracker.Item{
-		ID:   uuid.New().String(),
-		Name: "first",
-	}
+	app := fiber.New()
+	server.Route(app.Group("/api"))
 
-	if err := repo.Create(ctx, it); err != nil {
-		log.Fatal(err)
-	}
-
-	got, err := repo.List(ctx)
+	err = app.Listen(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	for _, it := range got {
-		log.Printf("item: %+v", it)
-	}
-}
-
-func env(key, def string) string {
-	v := os.Getenv(key)
-	if v == "" {
-		return def
-	}
-	return v
-}
-
-func envInt(key string, def int) int {
-	v := os.Getenv(key)
-	if v == "" {
-		return def
-	}
-	n, err := strconv.Atoi(v)
-	if err != nil {
-		return def
-	}
-	return n
 }

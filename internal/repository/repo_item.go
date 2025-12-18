@@ -1,7 +1,8 @@
-package item
+package repository
 
 import (
 	"context"
+	"fmt"
 	"job4j.ru/go-lang-base/internal/tracker"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -20,7 +21,10 @@ func (r *RepoPg) Create(ctx context.Context, it tracker.Item) error {
 		`insert into items(id, name) values($1, $2)`,
 		it.ID, it.Name,
 	)
-	return err
+	if err != nil {
+		return fmt.Errorf("r.pool.Exec: %w", err)
+	}
+	return nil
 }
 
 func (r *RepoPg) List(ctx context.Context) ([]tracker.Item, error) {
