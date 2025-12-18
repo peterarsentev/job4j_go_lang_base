@@ -14,7 +14,7 @@ func (u UI) Run() {
 	for {
 		u.Out.Out("select action")
 		selected := u.In.Get()
-		if "exit" == selected {
+		if selected == "exit" {
 			break
 		}
 		action, ok := actions[selected]

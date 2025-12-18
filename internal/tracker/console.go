@@ -19,8 +19,8 @@ type ConsoleInput struct {
 
 func (c ConsoleInput) Get() string {
 	scanner := bufio.NewScanner(os.Stdin)
-	if scanner.Scan() {
-		// block IO.
+	if !scanner.Scan() {
+		return ""
 	}
 	return scanner.Text()
 }
