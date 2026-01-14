@@ -1,12 +1,14 @@
 package tracker
 
+import "context"
+
 type UI struct {
-	In      Input
-	Out     Output
-	Tracker *Tracker
+	In    Input
+	Out   Output
+	Store Store
 }
 
-func (u UI) Run() {
+func (u UI) Run(ctx context.Context) error {
 	actions := map[string]Usecase{
 		"add": AddUsecase{},
 		"get": GetUsecase{},
@@ -22,6 +24,10 @@ func (u UI) Run() {
 			u.Out.Out("not fount action")
 			continue
 		}
-		action.Done(u.In, u.Out, u.Tracker)
+		err := action.Done(ctx, u.In, u.Out, u.Store)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }

@@ -12,7 +12,7 @@ func (i Item) toString() string {
 }
 
 type Tracker struct {
-	Items []Item
+	items []Item
 }
 
 func NewTracker() *Tracker {
@@ -20,9 +20,29 @@ func NewTracker() *Tracker {
 }
 
 func (t *Tracker) AddItem(item Item) {
-	t.Items = append(t.Items, item)
+	t.items = append(t.items, item)
+}
+
+func (t *Tracker) UpdateItem(item Item) error {
+	index, ok := t.indexOf(item.ID)
+	if !ok {
+		return ErrNotFound
+	}
+	t.items[index] = item
+	return nil
+}
+
+func (t *Tracker) indexOf(id string) (int, bool) {
+	for i, item := range t.items {
+		if item.ID == id {
+			return i, true
+		}
+	}
+	return -1, false
 }
 
 func (t *Tracker) GetItems() []Item {
-	return t.Items
+	res := make([]Item, len(t.items))
+	copy(res, t.items)
+	return res
 }

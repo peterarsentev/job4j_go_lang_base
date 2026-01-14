@@ -29,8 +29,8 @@ func main() {
 	defer pool.Close()
 
 	repo := item.NewRepoPg(pool)
-	server := api.NewServer(repo)
 
+	server := api.NewServer(repo)
 	app := fiber.New()
 	server.Route(app.Group("/api"))
 
